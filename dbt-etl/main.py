@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 import subprocess
 import logging
 
+#TEST
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
