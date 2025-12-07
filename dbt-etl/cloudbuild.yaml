@@ -1,5 +1,5 @@
 steps:
-  # Build the container image
+  # 1) Build de l'image Docker depuis le dossier dbt-etl
   - name: 'gcr.io/cloud-builders/docker'
     dir: 'dbt-etl'
     args:
@@ -10,18 +10,19 @@ steps:
       - 'gcr.io/$PROJECT_ID/dbt-service:latest'
       - '.'
 
-  # Push the container image to Container Registry
+  # 2) Push de l'image taguée avec le COMMIT_SHA
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
       - 'gcr.io/$PROJECT_ID/dbt-service:$COMMIT_SHA'
 
+  # 3) Push de l'image taguée latest
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
       - 'gcr.io/$PROJECT_ID/dbt-service:latest'
 
-  # Deploy container image to Cloud Run
+  # 4) Déploiement sur Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
