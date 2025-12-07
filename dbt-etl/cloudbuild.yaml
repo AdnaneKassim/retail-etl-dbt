@@ -7,7 +7,9 @@ steps:
       - 'gcr.io/$PROJECT_ID/dbt-service:$COMMIT_SHA'
       - '-t'
       - 'gcr.io/$PROJECT_ID/dbt-service:latest'
-      - '.'
+      - '-f'
+      - 'dbt-etl/Dockerfile'
+      - 'dbt-etl'
 
   # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
