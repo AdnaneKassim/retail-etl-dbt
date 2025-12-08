@@ -1,0 +1,46 @@
+steps:
+  # 1) Build de l'image Docker depuis le dossier dbt-etl
+  - name: 'gcr.io/cloud-builders/docker'
+    dir: 'dbt-etl'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/dbt-service:$COMMIT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/dbt-service:latest'
+      - '.'
+
+  # 2) Push de l'image taguée avec le COMMIT_SHA
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/dbt-service:$COMMIT_SHA'
+
+  # 3) Push de l'image taguée latest
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/dbt-service:latest'
+
+  # 4) Déploiement sur Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'dbt-service'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/dbt-service:$COMMIT_SHA'
+      - '--region'
+      - 'europe-west1'
+      - '--platform'
+      - 'managed'
+      - '--set-secrets'
+      - '/secrets/dbt-service-keyfile=dbt-service-keyfile:latest'
+
+images:
+  - 'gcr.io/$PROJECT_ID/dbt-service:$COMMIT_SHA'
+  - 'gcr.io/$PROJECT_ID/dbt-service:latest'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
