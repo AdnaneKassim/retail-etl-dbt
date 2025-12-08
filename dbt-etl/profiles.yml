@@ -9,4 +9,4 @@ retail_dsy:
       threads: 4
       timeout_seconds: 300
       location: europe-west1
-      keyfile: /secrets/dbt-service-keyfile
+      keyfile: /secrets/dbt-keyfile
