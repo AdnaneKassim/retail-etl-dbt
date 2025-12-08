@@ -4,10 +4,10 @@ WITH datetime_cte AS (
   SELECT DISTINCT
     InvoiceDate AS datetime_id,
     CASE
-      WHEN LENGTH(InvoiceDate) = 16 THEN
+      WHEN LENGTH(CAST(InvoiceDate AS STRING)) = 16 THEN
         -- Date format: "DD/MM/YYYY HH:MM"
         PARSE_DATETIME('%m/%d/%Y %H:%M', InvoiceDate)
-      WHEN LENGTH(InvoiceDate) <= 14 THEN
+      WHEN LENGTH(CAST(InvoiceDate AS STRING)) <= 14 THEN
         -- Date format: "MM/DD/YY HH:MM"
         PARSE_DATETIME('%m/%d/%y %H:%M', InvoiceDate)
       ELSE
