@@ -1,21 +1,14 @@
 -- dim_datetime.sql
--- Create a CTE to extract date and time components
+-- Create a CTE to extract date and time components from InvoiceDate
+
 WITH datetime_cte AS (
   SELECT DISTINCT
     InvoiceDate AS datetime_id,
-    CASE
-      WHEN LENGTH(CAST(InvoiceDate AS STRING)) = 16 THEN
-        -- Date format: "DD/MM/YYYY HH:MM"
-        PARSE_DATETIME('%m/%d/%Y %H:%M', CAST(InvoiceDate AS STRING))
-      WHEN LENGTH(CAST(InvoiceDate AS STRING)) <= 14 THEN
-        -- Date format: "MM/DD/YY HH:MM"
-        PARSE_DATETIME('%m/%d/%y %H:%M', CAST(InvoiceDate AS STRING))
-      ELSE
-        NULL
-    END AS date_part
+    InvoiceDate AS date_part
   FROM {{ source('retail_dsy', 'raw_invoice') }}
   WHERE InvoiceDate IS NOT NULL
 )
+
 SELECT
   datetime_id,
   date_part AS datetime,
